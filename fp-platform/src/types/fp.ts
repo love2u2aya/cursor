@@ -102,3 +102,6 @@ export type SessionModule =
   | "assets"
   | "insurance"
   | "notes";
+
+/** 面談の音声・テキスト取り込み元 */
+export type IntakeSourceKind = "speech" | "text" | "audio_file" | "video_file";

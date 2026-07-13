@@ -11,6 +11,7 @@ import type {
   SessionModule,
 } from "@/types/fp";
 import { ConfidentialBadge } from "@/components/fp/ConfidentialBadge";
+import { IntakePanel } from "@/components/fp/IntakePanel";
 import { StatusBadge } from "@/components/fp/StatusBadge";
 import { customerDisplayName, formatYen } from "@/lib/format";
 import { createId } from "@/lib/id";
@@ -64,6 +65,32 @@ export function SessionWorkspace({
     setMessage("顧客情報を保存しました");
   }
 
+  async function applyIntake(patch: {
+    customer: Customer;
+    session: Partial<ConsultationSession>;
+  }) {
+    setSaving(true);
+    setMessage("");
+
+    await fetch(`/api/fp/customers/${customer.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patch.customer),
+    });
+
+    const response = await fetch(`/api/fp/sessions/${session.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patch.session),
+    });
+
+    const nextSession = (await response.json()) as ConsultationSession;
+    setCustomer(patch.customer);
+    setSession(nextSession);
+    setSaving(false);
+    setMessage("自動入力を反映しました");
+  }
+
   const monthlyIncome = session.cashFlow
     .filter((line) => line.kind === "income")
     .reduce((sum, line) => sum + line.amountMonthly, 0);
@@ -115,6 +142,12 @@ export function SessionWorkspace({
           <SummaryCard label="総負債" value={formatYen(totalLiabilities)} />
         </div>
       </div>
+
+      <IntakePanel
+        customer={customer}
+        session={session}
+        onApply={applyIntake}
+      />
 
       <div className="flex flex-wrap gap-2">
         {modules.map((module) => (
