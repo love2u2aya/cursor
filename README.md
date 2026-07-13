@@ -15,6 +15,29 @@ data/
 
 ## クイックスタート
 
+### Windows で試す（いちばん簡単）
+
+**必要なもの:** [Node.js LTS](https://nodejs.org/) と [Python 3.10+](https://www.python.org/downloads/)（インストール時に「Add to PATH」にチェック）
+
+```powershell
+# 1. リポジトリを取得（未クローンの場合）
+git clone https://github.com/love2u2aya/cursor.git
+cd cursor
+git checkout cursor/zoom-companion-0fe9
+
+# 2. セットアップ（初回のみ）
+powershell -ExecutionPolicy Bypass -File .\scripts\setup-windows.ps1
+
+# 3. 起動
+powershell -ExecutionPolicy Bypass -File .\scripts\start-windows.ps1
+```
+
+または **`start.bat` をダブルクリック** でも起動できます。
+
+ブラウザで http://localhost:3000 が開いたら:
+1. 「同意して開始」
+2. 「**デモを再生**」をクリック → 約10秒でUIが反応します（Zoom不要・APIキー不要）
+
 ### 1. 環境変数
 
 ```bash
@@ -33,7 +56,19 @@ docker compose up --build
 
 ### 3. ローカル開発
 
-**API:**
+**Windows (PowerShell):**
+```powershell
+# ターミナル1 - API
+cd apps\api
+.\.venv\Scripts\Activate.ps1
+uvicorn main:app --reload --port 8000
+
+# ターミナル2 - Web
+cd apps\web
+npm run dev
+```
+
+**macOS / Linux:**
 ```bash
 cd apps/api
 python -m venv .venv && source .venv/bin/activate
