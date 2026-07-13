@@ -1,5 +1,6 @@
 import { createId } from "@/lib/id";
 import { findAmountAfter } from "@/lib/extract/amount";
+import { extractBirthDate } from "@/lib/extract/birth-date";
 import type { IntakeExtraction } from "@/types/intake";
 import type {
   AssetItem,
@@ -44,6 +45,19 @@ export function extractFromTranscript(transcript: string): IntakeExtraction {
   };
 
   if (!text) return extraction;
+
+  const birthDateResult = extractBirthDate(text);
+  if (birthDateResult) {
+    extraction.customer.birthDate = birthDateResult.birthDate;
+    pushField(
+      extraction,
+      "customer.birthDate",
+      birthDateResult.isCorrection ? "生年月日（訂正）" : "生年月日",
+      birthDateResult.birthDate,
+      birthDateResult.snippet,
+      birthDateResult.confidence,
+    );
+  }
 
   const phoneMatch = text.match(/(0\d{1,4}[-‐－]?\d{1,4}[-‐－]?\d{3,4})/);
   if (phoneMatch) {

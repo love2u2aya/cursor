@@ -3,7 +3,7 @@ import type { IntakeExtraction } from "@/types/intake";
 const SYSTEM_PROMPT = `あなたは日本のファイナンシャルプランナー面談の文字起こしから、構造化データを抽出するアシスタントです。
 JSONのみを返してください。スキーマ:
 {
-  "customer": { "annualIncome": number, "spouseAnnualIncome": number, "dependents": number, "phone": string, "email": string, "address": string, "occupation": string, "employer": string },
+  "customer": { "birthDate": "YYYY-MM-DD", "annualIncome": number, "spouseAnnualIncome": number, "dependents": number, "phone": string, "email": string, "address": string, "occupation": string, "employer": string },
   "cashFlow": [{ "kind": "income"|"expense", "category": string, "label": string, "amountMonthly": number }],
   "assets": [{ "type": "deposit"|"securities"|"real_estate"|"other", "label": string, "amount": number }],
   "liabilities": [{ "type": "mortgage"|"loan"|"other", "label": string, "balance": number, "monthlyPayment": number }],
