@@ -1,0 +1,27 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - CHUNK_DURATION_SECONDS=30
+      - KNOWLEDGE_DIR=/app/data/knowledge
+      - CHROMA_PERSIST_DIR=/app/data/chroma
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - api
+    restart: unless-stopped
