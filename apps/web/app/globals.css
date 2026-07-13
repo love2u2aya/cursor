@@ -66,6 +66,135 @@ body {
   background: var(--success);
 }
 
+.dot.speaking {
+  background: #f59e0b;
+  animation: dot-pulse 0.8s ease-in-out infinite;
+}
+
+@keyframes dot-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.7; }
+}
+
+.audio-activity {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.audio-activity.speaking {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.3);
+}
+
+.audio-activity.silent {
+  border-color: var(--border);
+}
+
+.audio-activity-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.audio-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+.audio-dot.active {
+  background: #f59e0b;
+  animation: dot-pulse 0.8s ease-in-out infinite;
+}
+
+.audio-meta {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.vu-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 48px;
+  margin-bottom: 12px;
+}
+
+.vu-bar {
+  flex: 1;
+  min-width: 4px;
+  background: linear-gradient(to top, #3b82f6, #60a5fa);
+  border-radius: 2px 2px 0 0;
+  transition: height 0.05s linear;
+}
+
+.audio-activity.speaking .vu-bar {
+  background: linear-gradient(to top, #f59e0b, #fbbf24);
+}
+
+.level-row,
+.buffer-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+}
+
+.level-track,
+.buffer-track {
+  flex: 1;
+  height: 6px;
+  background: var(--bg);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.level-fill {
+  height: 100%;
+  background: #3b82f6;
+  border-radius: 3px;
+  transition: width 0.05s linear;
+}
+
+.audio-activity.speaking .level-fill {
+  background: #f59e0b;
+}
+
+.buffer-fill {
+  height: 100%;
+  background: #22c55e;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.level-label,
+.buffer-label {
+  min-width: 72px;
+  text-align: right;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.audio-hint {
+  margin: 8px 0 0;
+  font-size: 0.8rem;
+  color: var(--success);
+}
+
+.audio-warn {
+  margin: 8px 0 0;
+  font-size: 0.8rem;
+  color: #fbbf24;
+}
+
 .controls {
   display: flex;
   flex-wrap: wrap;

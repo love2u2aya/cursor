@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import type { ServerMessage } from "@shared/protocol";
+import { AudioActivityPanel } from "@/components/AudioActivityPanel";
 import { ConsentModal } from "@/components/ConsentModal";
 import { ContextCards } from "@/components/ContextCards";
 import { TranscriptPanel } from "@/components/TranscriptPanel";
@@ -25,10 +26,22 @@ export default function HomePage() {
   const [demoRunning, setDemoRunning] = useState(false);
   const [pulseTranscript, setPulseTranscript] = useState(false);
   const [pulseContext, setPulseContext] = useState(false);
+  const [bufferSeconds, setBufferSeconds] = useState(0);
+  const [bufferTotal, setBufferTotal] = useState(30);
+  const [lastChunkAt, setLastChunkAt] = useState<number | null>(null);
   const demoAbortRef = useRef<AbortController | null>(null);
 
   const handleMessage = useCallback((message: ServerMessage) => {
+    if (message.type === "audio_received") {
+      setBufferSeconds(message.buffer_seconds);
+      setBufferTotal(message.buffer_total);
+      setLastChunkAt(Date.now());
+      if (message.buffer_seconds > 0) {
+        setStatus(`音声を受信中…（${message.buffer_seconds.toFixed(0)}/${message.buffer_total}秒）`);
+      }
+    }
     if (message.type === "transcript") {
+      setBufferSeconds(0);
       setSegments((prev) => [...prev, message.segment]);
     }
     if (message.type === "context") {
@@ -57,7 +70,15 @@ export default function HomePage() {
     onError: setError,
   });
 
-  const { capturing, startCapture, stopCapture } = useAudioCapture({
+  const {
+    capturing,
+    audioLevel,
+    isSpeaking,
+    chunksSent,
+    frequencyData,
+    startCapture,
+    stopCapture,
+  } = useAudioCapture({
     onChunk: sendAudioChunk,
     onError: setError,
   });
@@ -74,6 +95,8 @@ export default function HomePage() {
     stopCapture();
     disconnect();
     setActive(false);
+    setBufferSeconds(0);
+    setLastChunkAt(null);
     setStatus("セッション終了");
   };
 
@@ -150,12 +173,24 @@ export default function HomePage() {
           <p className="subtitle">会議の聞き取りと関連情報表示（約30秒遅延）</p>
         </div>
         <div className="status-bar">
-          <span className={`dot ${connected || demoRunning ? "online" : "offline"}`} />
-          {status}
+          <span className={`dot ${connected || demoRunning ? "online" : "offline"} ${isSpeaking ? "speaking" : ""}`} />
+          {capturing && isSpeaking ? "音声を検知中" : status}
         </div>
       </header>
 
       {error && <div className="error-banner">{error}</div>}
+
+      {capturing && (
+        <AudioActivityPanel
+          audioLevel={audioLevel}
+          isSpeaking={isSpeaking}
+          chunksSent={chunksSent}
+          frequencyData={frequencyData}
+          bufferSeconds={bufferSeconds}
+          bufferTotal={bufferTotal}
+          lastChunkAt={lastChunkAt}
+        />
+      )}
 
       <div className="controls">
         {!active ? (

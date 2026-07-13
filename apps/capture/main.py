@@ -59,6 +59,7 @@ async def create_session(api_url: str) -> str:
 
 
 def record_chunk(device: int | None, seconds: int, sample_rate: int = 16000) -> bytes:
+    _require_sounddevice()
     frames = int(seconds * sample_rate)
     recording = sd.rec(frames, samplerate=sample_rate, channels=1, dtype="int16", device=device)
     sd.wait()

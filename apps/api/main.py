@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import base64
 import json
 from uuid import uuid4
 
@@ -116,6 +117,17 @@ async def audio_websocket(websocket: WebSocket, session_id: str) -> None:
                 data_b64=message["data"],
                 seq=int(message.get("seq", 0)),
                 mime_type=message.get("mime_type"),
+            )
+
+            chunk_bytes = len(base64.b64decode(message["data"]))
+            await websocket.send_json(
+                {
+                    "type": "audio_received",
+                    "seq": int(message.get("seq", 0)),
+                    "buffer_seconds": round(buffer.elapsed, 1),
+                    "buffer_total": settings.chunk_duration_seconds,
+                    "chunk_bytes": chunk_bytes,
+                }
             )
 
             if buffer.should_flush():

@@ -33,4 +33,5 @@ export type ServerMessage =
   | { type: "context"; cards: ContextCard[]; summary?: string; decisions?: string[]; open_questions?: string[] }
   | { type: "status"; message: string }
   | { type: "error"; message: string }
-  | { type: "pong" };
+  | { type: "pong" }
+  | { type: "audio_received"; seq: number; buffer_seconds: number; buffer_total: number; chunk_bytes: number };
