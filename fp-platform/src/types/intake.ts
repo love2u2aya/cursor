@@ -24,7 +24,7 @@ export interface IntakeExtraction {
   internalMemoAppend: string;
   fields: ExtractedField[];
   transcript: string;
-  method: "rules" | "llm" | "hybrid";
+  method: "rules" | "llm" | "hybrid" | "cursor";
 }
 
 export type IntakeSource = "speech" | "text" | "audio_file" | "video_file";

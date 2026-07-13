@@ -7,9 +7,11 @@ import {
   mergeExtractionIntoCustomer,
   mergeExtractionIntoSession,
 } from "@/lib/extract/transcript-parser";
+import { buildCursorAgentPrompt } from "@/lib/extract/agent-prompt";
+import { parseAgentExtraction } from "@/lib/extract/agent-import";
 import { formatYen } from "@/lib/format";
 
-type IntakeMode = "record" | "text" | "file";
+type IntakeMode = "record" | "text" | "file" | "cursor";
 
 interface SpeechRecognitionEventLike {
   results: ArrayLike<{ [index: number]: { transcript: string } }>;
@@ -53,6 +55,8 @@ export function IntakePanel({
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [agentJson, setAgentJson] = useState("");
+  const [promptCopied, setPromptCopied] = useState(false);
 
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -183,8 +187,45 @@ export function IntakePanel({
     setExtraction(data);
     setSelectedKeys(new Set(data.fields.map((field) => field.key)));
     setMessage(
-      `${data.fields.length} 件の項目を検出しました（方式: ${data.method}）。反映する項目を選んでください。`,
+      `${data.fields.length} 件の項目を検出しました（方式: ${methodLabel(data.method)}）。反映する項目を選んでください。`,
     );
+  }
+
+  function methodLabel(method: IntakeExtraction["method"]): string {
+    const labels = {
+      rules: "ルール解析",
+      llm: "AI解析",
+      hybrid: "ハイブリッド",
+      cursor: "Cursor解析",
+    };
+    return labels[method];
+  }
+
+  async function copyCursorPrompt() {
+    if (!transcript.trim()) {
+      setError("先に文字起こしテキストを入力してください。");
+      return;
+    }
+    await navigator.clipboard.writeText(buildCursorAgentPrompt(transcript));
+    setPromptCopied(true);
+    setMessage(
+      "プロンプトをコピーしました。Cursor チャットに貼り付けて解析してください。返ってきた JSON を下の欄に貼り付けます。",
+    );
+    setTimeout(() => setPromptCopied(false), 3000);
+  }
+
+  function importCursorJson() {
+    setError("");
+    try {
+      const data = parseAgentExtraction(agentJson, transcript);
+      setExtraction(data);
+      setSelectedKeys(new Set(data.fields.map((field) => field.key)));
+      setMessage(
+        `${data.fields.length} 件の項目を Cursor 解析から読み込みました。`,
+      );
+    } catch {
+      setError("JSON の形式が正しくありません。Cursor の返答をそのまま貼り付けてください。");
+    }
   }
 
   async function applySelected() {
@@ -229,6 +270,20 @@ export function IntakePanel({
       if (field.key === "insurance.policy") {
         filtered.insurancePolicies.push(...extraction.insurancePolicies);
       }
+      if (field.key === "insurance.all") {
+        filtered.insurancePolicies.push(...extraction.insurancePolicies);
+      }
+      if (field.key.startsWith("cashflow.") && field.key !== "cashflow.income" && field.key !== "cashflow.expense") {
+        const index = Number(field.key.split(".")[1]);
+        const line = extraction.cashFlow[index];
+        if (line) filtered.cashFlow.push(line);
+      }
+      if (field.key === "assets.all") {
+        filtered.assets.push(...extraction.assets);
+      }
+      if (field.key === "liabilities.all") {
+        filtered.liabilities.push(...extraction.liabilities);
+      }
       if (field.key === "memo.internal") {
         filtered.internalMemoAppend = extraction.internalMemoAppend;
       }
@@ -260,7 +315,7 @@ export function IntakePanel({
           音声・テキスト自動入力
         </h3>
         <p className="mt-1 text-sm text-slate-600">
-          面談の録音・読み上げ・動画/音声ファイルから文字起こしし、プロファイルやCF・保障欄を自動で埋めます。
+          リアルタイムは録音＋ルール解析。まとめて処理する場合は Cursor（月額内）解析も使えます。
         </p>
       </div>
 
@@ -269,7 +324,8 @@ export function IntakePanel({
           [
             ["record", "ライブ録音"],
             ["text", "テキスト"],
-            ["file", "動画・音声ファイル"],
+            ["file", "動画・音声"],
+            ["cursor", "Cursorまとめて解析"],
           ] as const
         ).map(([id, label]) => (
           <button
@@ -329,6 +385,45 @@ export function IntakePanel({
         </label>
       ) : null}
 
+      {mode === "cursor" ? (
+        <div className="mb-4 space-y-3 rounded-lg border border-violet-200 bg-violet-50 p-4 text-sm text-slate-700">
+          <p className="font-medium text-violet-900">
+            面談後のまとめて解析（OPENAI_API_KEY 不要・Cursor月額内）
+          </p>
+          <ol className="list-decimal space-y-1 pl-5">
+            <li>下の文字起こしを入力（または貼り付け）</li>
+            <li>「プロンプトをコピー」→ Cursor チャットに貼り付け</li>
+            <li>返ってきた JSON を下の欄に貼り付け →「JSONを読み込む」</li>
+          </ol>
+          <button
+            type="button"
+            onClick={copyCursorPrompt}
+            disabled={!transcript.trim()}
+            className="rounded-lg bg-violet-700 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-800 disabled:opacity-50"
+          >
+            {promptCopied ? "コピーしました" : "Cursor用プロンプトをコピー"}
+          </button>
+          <label className="block font-medium text-slate-700">
+            Cursor の返答 JSON
+            <textarea
+              value={agentJson}
+              onChange={(event) => setAgentJson(event.target.value)}
+              rows={5}
+              placeholder='{"customer":{"birthDate":"1985-03-03",...},...}'
+              className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-xs"
+            />
+          </label>
+          <button
+            type="button"
+            onClick={importCursorJson}
+            disabled={!agentJson.trim()}
+            className="rounded-lg border border-violet-300 bg-white px-4 py-2 text-sm font-medium text-violet-800 hover:bg-violet-100 disabled:opacity-50"
+          >
+            JSONを読み込む
+          </button>
+        </div>
+      ) : null}
+
       <label className="block text-sm font-medium text-slate-700">
         文字起こしテキスト
         <textarea
@@ -341,14 +436,16 @@ export function IntakePanel({
       </label>
 
       <div className="mt-4 flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={runExtraction}
-          disabled={isProcessing || !transcript.trim()}
-          className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800 disabled:opacity-50"
-        >
-          {isProcessing ? "処理中..." : "解析して項目を抽出"}
-        </button>
+        {mode !== "cursor" ? (
+          <button
+            type="button"
+            onClick={runExtraction}
+            disabled={isProcessing || !transcript.trim()}
+            className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800 disabled:opacity-50"
+          >
+            {isProcessing ? "処理中..." : "解析して項目を抽出（ルール）"}
+          </button>
+        ) : null}
       </div>
 
       {error ? (
