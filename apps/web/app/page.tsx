@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import type { ServerMessage } from "@shared/protocol";
 import { ConsentModal } from "@/components/ConsentModal";
 import { ContextCards } from "@/components/ContextCards";
@@ -9,6 +9,7 @@ import { useAudioCapture } from "@/hooks/useAudioCapture";
 import { useSession } from "@/hooks/useSession";
 import type { ContextCard, TranscriptSegment } from "@/lib/api";
 import { createSession, exportSessionUrl } from "@/lib/api";
+import { runDemo } from "@/lib/demo";
 
 export default function HomePage() {
   const [consented, setConsented] = useState(false);
@@ -21,6 +22,10 @@ export default function HomePage() {
   const [status, setStatus] = useState("待機中");
   const [error, setError] = useState<string | null>(null);
   const [active, setActive] = useState(false);
+  const [demoRunning, setDemoRunning] = useState(false);
+  const [pulseTranscript, setPulseTranscript] = useState(false);
+  const [pulseContext, setPulseContext] = useState(false);
+  const demoAbortRef = useRef<AbortController | null>(null);
 
   const handleMessage = useCallback((message: ServerMessage) => {
     if (message.type === "transcript") {
@@ -77,6 +82,62 @@ export default function HomePage() {
     window.open(exportSessionUrl(sessionId), "_blank");
   };
 
+  const flash = (setter: (v: boolean) => void) => {
+    setter(true);
+    setTimeout(() => setter(false), 600);
+  };
+
+  const startDemo = async () => {
+    setError(null);
+    demoAbortRef.current?.abort();
+    const controller = new AbortController();
+    demoAbortRef.current = controller;
+
+    setSegments([]);
+    setCards([]);
+    setSummary(undefined);
+    setDecisions([]);
+    setOpenQuestions([]);
+    setDemoRunning(true);
+    setActive(true);
+    setStatus("デモを準備中...");
+
+    if (!sessionId) {
+      const session = await createSession();
+      setSessionId(session.session_id);
+    }
+
+    try {
+      await runDemo((step) => {
+        setStatus(step.status);
+        if (step.segment) {
+          setSegments((prev) => [...prev, step.segment!]);
+          flash(setPulseTranscript);
+        }
+        if (step.cards) {
+          setCards((prev) => {
+            const existing = new Set(prev.map((c) => c.id));
+            return [...prev, ...step.cards!.filter((c) => !existing.has(c.id))];
+          });
+          flash(setPulseContext);
+        }
+        if (step.summary) setSummary(step.summary);
+        if (step.decisions) setDecisions(step.decisions);
+        if (step.openQuestions) setOpenQuestions(step.openQuestions);
+      }, controller.signal);
+    } catch {
+      setStatus("デモを停止しました");
+    } finally {
+      setDemoRunning(false);
+    }
+  };
+
+  const stopDemo = () => {
+    demoAbortRef.current?.abort();
+    setDemoRunning(false);
+    setStatus("デモ停止");
+  };
+
   if (!consented) {
     return <ConsentModal onAccept={() => setConsented(true)} />;
   }
@@ -89,7 +150,7 @@ export default function HomePage() {
           <p className="subtitle">会議の聞き取りと関連情報表示（約30秒遅延）</p>
         </div>
         <div className="status-bar">
-          <span className={`dot ${connected ? "online" : "offline"}`} />
+          <span className={`dot ${connected || demoRunning ? "online" : "offline"}`} />
           {status}
         </div>
       </header>
@@ -98,18 +159,32 @@ export default function HomePage() {
 
       <div className="controls">
         {!active ? (
-          <button className="btn primary" onClick={startSession}>
-            セッション開始
-          </button>
+          <>
+            <button className="btn primary" onClick={startSession}>
+              セッション開始
+            </button>
+            <button className="btn demo" onClick={startDemo}>
+              デモを再生
+            </button>
+          </>
         ) : (
           <>
-            {!capturing ? (
+            {demoRunning ? (
+              <button className="btn danger" onClick={stopDemo}>
+                デモを停止
+              </button>
+            ) : !capturing ? (
               <button className="btn primary" onClick={startCapture} disabled={!connected}>
                 Zoomタブの音声を共有
               </button>
             ) : (
               <button className="btn danger" onClick={stopCapture}>
                 音声共有を停止
+              </button>
+            )}
+            {!demoRunning && (
+              <button className="btn demo" onClick={startDemo}>
+                デモを再生
               </button>
             )}
             <button className="btn secondary" onClick={handleExport} disabled={!sessionId}>
@@ -123,13 +198,17 @@ export default function HomePage() {
       </div>
 
       <div className="grid">
-        <TranscriptPanel segments={segments} />
-        <ContextCards
-          cards={cards}
-          summary={summary}
-          decisions={decisions}
-          openQuestions={openQuestions}
-        />
+        <div className={pulseTranscript ? "panel-pulse" : ""}>
+          <TranscriptPanel segments={segments} />
+        </div>
+        <div className={pulseContext ? "panel-pulse" : ""}>
+          <ContextCards
+            cards={cards}
+            summary={summary}
+            decisions={decisions}
+            openQuestions={openQuestions}
+          />
+        </div>
       </div>
 
       <footer className="footer">
