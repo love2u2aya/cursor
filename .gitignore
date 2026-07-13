@@ -1,0 +1,21 @@
+# Credentials and tokens
+client_secret.json
+token.json
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+
+# Reports (optional: keep structure only)
+reports/*.md
+
+# IDE
+.idea/
+.vscode/
+*.swp
