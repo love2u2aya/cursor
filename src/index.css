@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Sora:wght@400;500;600&display=swap');
+
+:root {
+  --bg0: #14110f;
+  --bg1: #1e1915;
+  --bg2: #2a231c;
+  --line: rgba(244, 228, 200, 0.14);
+  --text: #f4e8d4;
+  --muted: #b5a48c;
+  --accent: #d4a05a;
+  --accent-2: #7f9e8a;
+  --warn: #e0a070;
+  --danger: #c56b5a;
+  --radius: 18px;
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-ui: 'Sora', sans-serif;
+  color: var(--text);
+  background: var(--bg0);
+  font-family: var(--font-ui);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(212, 160, 90, 0.16), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, rgba(127, 158, 138, 0.14), transparent 50%),
+    linear-gradient(165deg, #1a1511 0%, #0f0d0c 55%, #17140f 100%);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
