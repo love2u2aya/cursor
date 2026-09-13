@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ダビンチばしの作り方（上から・横から）</title>
+  <style>
+    :root {
+      --bg: #f6f1e7;
+      --paper: #fffdf8;
+      --ink: #2b241c;
+      --muted: #6b5e4e;
+      --line: #e6dccb;
+      --blue: #4a90d9;
+      --purple: #e040a0;
+      --green: #5b8c3e;
+      --yellow: #e8b800;
+      --red: #e23b3b;
+      --black: #2c2c2c;
+      --pink: #f48fb1;
+      --brown: #a0522d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+    }
+    header {
+      background: #3d2b1f;
+      color: #fff8ee;
+      padding: 40px 20px 32px;
+      text-align: center;
+    }
+    header p { max-width: 720px; margin: 12px auto 0; opacity: .9; }
+    h1 { margin: 0; font-size: 1.8rem; letter-spacing: .06em; }
+    main { max-width: 980px; margin: 0 auto; padding: 24px 16px 80px; }
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 22px;
+      margin: 18px 0;
+      box-shadow: 0 8px 24px rgba(80, 50, 20, .06);
+    }
+    h2 { margin: 0 0 12px; font-size: 1.25rem; }
+    .materials li { margin: 6px 0; }
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 10px 16px; font-size: .92rem;
+    }
+    .swatch {
+      display: inline-block; width: 14px; height: 14px; border-radius: 3px;
+      margin-right: 6px; vertical-align: -2px;
+    }
+    .step { margin-top: 28px; }
+    .step h3 {
+      display: flex; align-items: center; gap: 10px;
+      margin: 0 0 8px; font-size: 1.15rem;
+    }
+    .num {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: #3d2b1f; color: #fff; display: grid; place-items: center;
+      font-size: .95rem; flex: 0 0 auto;
+    }
+    .hint {
+      display: inline-block; background: #fff3c8; border: 1px solid #ecd27a;
+      border-radius: 999px; padding: 2px 10px; font-size: .85rem; margin-left: 6px;
+    }
+    .views {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    @media (max-width: 720px) { .views { grid-template-columns: 1fr; } }
+    figure {
+      margin: 0;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    figcaption {
+      background: #f3eadc;
+      padding: 8px 12px;
+      font-weight: 700;
+      font-size: .95rem;
+    }
+    svg { display: block; width: 100%; height: auto; }
+    .note { color: var(--muted); font-size: .95rem; }
+    a { color: #8a4b12; }
+    .overview img { width: 100%; border-radius: 12px; border: 1px solid var(--line); }
+    footer { color: var(--muted); font-size: .85rem; }
+    code { background: #f3eadc; padding: 1px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ダビンチばしの作り方</h1>
+    <p>のり・くぎ・ひもは使いません。割り箸を組むだけで、摩擦と重さで自立する橋になります。各手順に<strong>上から</strong>と<strong>横から</strong>の図をつけています。</p>
+  </header>
+  <main>
+    <section class="card">
+      <h2>用意するもの</h2>
+      <ul class="materials">
+        <li>割り箸 <strong>15本分</strong>（割って棒にする。ストローでも可）</li>
+        <li>テープや接着剤は<strong>使わない</strong>（初めてなら仮止め用テープだけあると安心）</li>
+        <li>四角くて滑りにくい割り箸が組みやすい</li>
+      </ul>
+      <p class="note">色は説明用です。実物は全部同じ色で大丈夫です。色分けすると「どれが上でどれが下か」が分かりやすくなります。</p>
+      <p class="legend">
+        <span><i class="swatch" style="background:var(--blue)"></i>青＝1段目の脚</span>
+        <span><i class="swatch" style="background:var(--purple)"></i>紫＝2段目の横棒</span>
+        <span><i class="swatch" style="background:var(--green)"></i>緑＝中央の脚</span>
+        <span><i class="swatch" style="background:var(--yellow)"></i>黄＝くぐらせる横棒</span>
+        <span><i class="swatch" style="background:var(--red)"></i>赤＝反対側の横棒</span>
+        <span><i class="swatch" style="background:var(--black)"></i>黒＝伸ばす脚</span>
+        <span><i class="swatch" style="background:var(--pink)"></i>桃／茶＝くり返しの横棒</span>
+      </p>
+    </section>
+
+    <section class="card overview">
+      <h2>完成の見え方</h2>
+      <p>上から見ると格子、横から見るとアーチになります。</p>
+      <img src="images/davinci_complete_top_and_side.png" alt="完成形。左が上から見た格子、右が横から見たアーチ">
+    </section>
+
+    <section class="card">
+      <h2>手順</h2>
+      <p class="note">机の上で組み立てます。途中から橋が少し浮き上がります。崩れるときは両手で平らに押さえたまま、次の棒を斜めから差し込んでください。</p>
+
+      <article class="step">
+        <h3><span class="num">1</span> 1段目：青い脚を2本、平行に置く</h3>
+        <p>自分から見て縦方向に、少し間隔をあけて2本置きます。これが橋の幅になります。</p>
+        <div class="views">
+          <figure>
+            <figcaption>上から</figcaption>
+            <svg viewBox="0 0 360 240" role="img" aria-label="上から。青い割り箸が2本平行">
+              <rect width="360" height="240" fill="#fff"/>
+              <rect x="118" y="28" width="18" height="184" rx="6" fill="#4a90d9"/>
+              <rect x="224" y="28" width="18" height="184" rx="6" fill="#4a90d9"/>
+            </svg>
+          </figure>
+          <figure>
+            <figcaption>横から</figcaption>
+            <svg viewBox="0 0 360 180" role="img" aria-label="横から。青い割り箸が机に寝ている">
+              <rect width="360" height="180" fill="#fff"/>
+              <line x1="24" y1="132" x2="336" y2="132" stroke="#c9b79a" stroke-width="4"/>
+              <rect x="108" y="112" width="52" height="16" rx="5" fill="#4a90d9"/>
+              <rect x="200" y="112" width="52" height="16" rx="5" fill="#4a90d9"/>
+              <text x="180" y="158" text-anchor="middle" font-size="12" fill="#6b5e4e">机の上に寝ている</text>
+            </svg>
+          </figure>
+        </div>
+      </article>
+
+      <article class="step">
+        <h3><span class="num">2</span> 2段目：紫の横棒を2本、青い脚の上に乗せる</h3>
+        <p>青い2本に直角に交差させて、井げた（#）の形にします。</p>
+        <div class="views">
+          <figure>
+            <figcaption>上から</figcaption>
+            <svg viewBox="0 0 360 240">
+              <rect width="360" height="240" fill="#fff"/>
+              <rect x="118" y="28" width="18" height="184" rx="6" fill="#4a90d9"/>
+              <rect x="224" y="28" width="18" height="184" rx="6" fill="#4a90d9"/>
+              <rect x="86" y="72" width="188" height="16" rx="6" fill="#e040a0"/>
+              <rect x="86" y="152" width="188" height="16" rx="6" fill="#e040a0"/>
+            </svg>
+          </figure>
+          <figure>
+            <figcaption>横から</figcaption>
+            <svg viewBox="0 0 360 180">
+              <rect width="360" height="180" fill="#fff"/>
+              <line x1="24" y1="132" x2="336" y2="132" stroke="#c9b79a" stroke-width="4"/>
+              <rect x="108" y="112" width="52" height="16" rx="5" fill="#4a90d9"/>
+              <rect x="200" y="112" width="52" height="16" rx="5" fill="#4a90d9"/>
+              <rect x="70" y="94" width="220" height="16" rx="5" fill="#e040a0"/>
+              <text x="180" y="158" text-anchor="middle" font-size="12" fill="#6b5e4e">紫が青の上</text>
+            </svg>
+          </figure>
+        </div>
+      </article>
+
+      <article class="step">
+        <h3><span class="num">3</span> 3段目：緑の脚を中央に1本乗せる</h3>
+        <p>紫の横棒の真ん中あたりに、青と同じ向きで1本置きます。</p>
+        <div class="views">
+          <figure>
+            <figcaption>上から</figcaption>
+            <svg viewBox="0 0 360 240">
+              <rect width="360" height="240" fill="#fff"/>
+              <rect x="118" y="28" width="18" height="184" rx="6" fill="#4a90d9"/>
+              <rect x="224" y="28" width="18" height="184" rx="6" fill="#4a90d9"/>
+              <rect x="86" y="72" width="188" height="16" rx="6" fill="#e040a0"/>
+              <rect x="86" y="152" width="188" height="16" rx="6" fill="#e040a0"/>
+              <rect x="171" y="28" width="18" height="184" rx="6" fill="#5b8c3e"/>
+            </svg>
+          </figure>
+          <figure>
+            <figcaption>横から</figcaption>
+            <svg viewBox="0 0 360 180">
+              <rect width="360" height="180" fill="#fff"/>
+              <line x1="24" y1="132" x2="336" y2="132" stroke="#c9b79a" stroke-width="4"/>
+              <rect x="108" y="112" width="52" height="16" rx="5" fill="#4a90d9"/>
+              <rect x="200" y="112" width="52" height="16" rx="5" fill="#4a90d9"/>
+              <rect x="70" y="94" width="220" height="16" rx="5" fill="#e040a0"/>
+              <rect x="154" y="76" width="52" height="16" rx="5" fill="#5b8c3e"/>
+              <text x="180" y="158" text-anchor="middle" font-size="12" fill="#6b5e4e">緑が一段高い</text>
+            </svg>
+          </figure>
+        </div>
+      </article>
+
+      <article class="step">
+        <h3><span class="num">4</span> 黄の横棒を「緑の上・青の下」にくぐらせる<span class="hint">いちばん大事</span></h3>
+        <p>青い脚を少し持ち上げ、黄色い棒を<strong>緑の上・青の下</strong>に左右1本ずつ差し込みます。これで橋が浮き始めます。</p>
+        <div class="views">
+          <figure>
+            <figcaption>上から</figcaption>
+            <svg viewBox="0 0 360 240">
+              <rect width="360" height="240" fill="#fff"/>
+              <rect x="118" y="28" width="18" height="184" rx="6" fill="#4a90d9"/>
+              <rect x="224" y="28" width="18" height="184" rx="6" fill="#4a90d9"/>
+              <rect x="86" y="72" width="188" height="16" rx="6" fill="#e040a0"/>
+              <rect x="86" y="152" width="188" height="16" rx="6" fill="#e040a0"/>
+              <rect x="171" y="28" width="18" height="184" rx="6" fill="#5b8c3e"/>
+              <rect x="48" y="50" width="160" height="16" rx="6" fill="#e8b800"/>
+              <rect x="48" y="174" width="160" height="16" rx="6" fill="#e8b800"/>
+            </svg>
+          </figure>
+          <figure>
+            <figcaption>横から</figcaption>
+            <svg viewBox="0 0 360 180">
+              <rect width="360" height="180" fill="#fff"/>
+              <line x1="24" y1="138" x2="336" y2="138" stroke="#c9b79a" stroke-width="4"/>
+              <path d="M70 118 C120 118, 150 78, 180 70 C210 78, 200 118, 250 118" fill="none" stroke="#e8b800" stroke-width="14" stroke-linecap="round"/>
+              <rect x="96" y="104" width="40" height="16" rx="5" fill="#4a90d9"/>
+              <rect x="154" y="62" width="52" height="16" rx="5" fill="#5b8c3e"/>
+              <rect x="70" y="86" width="220" height="12" rx="5" fill="#e040a0" opacity=".85"/>
+              <text x="180" y="164" text-anchor="middle" font-size="12" fill="#6b5e4e">黄は中央で緑の上、端で青の下</text>
+            </svg>
+          </figure>
+        </div>
+        <img src="images/davinci_step4_top_and_side.png" alt="ステップ4の上からと横から" style="width:100%;margin-top:10px;border-radius:12px;border:1px solid #e6dccb">
+      </article>
+
+      <article class="step">
+        <h3><span class="num">5</span> 反対側も同じ。赤を「緑の上・青の下」に通す</h3>
+        <p>右側の青い脚も持ち上げ、赤い横棒を2本差し込みます。これで最小の原理モデルになります。</p>
+        <div class="views">
+          <figure>
+            <figcaption>上から</figcaption>
+            <svg viewBox="0 0 360 240">
+              <rect width="360" height="240" fill="#fff"/>
+              <rect x="118" y="28" width="18" height="184" rx="6" fill="#4a90d9"/>
+              <rect x="224" y="28" width="18" height="184" rx="6" fill="#4a90d9"/>
+              <rect x="86" y="72" width="188" height="16" rx="6" fill="#e040a0"/>
+              <rect x="86" y="152" width="188" height="16" rx="6" fill="#e040a0"/>
+              <rect x="171" y="28" width="18" height="184" rx="6" fill="#5b8c3e"/>
+              <rect x="48" y="50" width="160" height="16" rx="6" fill="#e8b800"/>
+              <rect x="48" y="174" width="160" height="16" rx="6" fill="#e8b800"/>
+              <rect x="152" y="50" width="160" height="16" rx="6" fill="#e23b3b"/>
+              <rect x="152" y="174" width="160" height="16" rx="6" fill="#e23b3b"/>
+            </svg>
+          </figure>
+          <figure>
+            <figcaption>横から</figcaption>
+            <svg viewBox="0 0 360 180">
+              <rect width="360" height="180" fill="#fff"/>
+              <line x1="24" y1="142" x2="336" y2="142" stroke="#c9b79a" stroke-width="4"/>
+              <path d="M56 124 C120 124, 150 72, 180 64 C210 72, 240 124, 304 124" fill="none" stroke="#e8b800" stroke-width="10" stroke-linecap="round"/>
+              <path d="M56 112 C120 112, 150 68, 180 60 C210 68, 240 112, 304 112" fill="none" stroke="#e23b3b" stroke-width="10" stroke-linecap="round"/>
+              <rect x="92" y="108" width="36" height="16" rx="5" fill="#4a90d9"/>
+              <rect x="232" y="108" width="36" height="16" rx="5" fill="#4a90d9"/>
+              <rect x="154" y="52" width="52" height="16" rx="5" fill="#5b8c3e"/>
+              <text x="180" y="166" text-anchor="middle" font-size="12" fill="#6b5e4e">左右対称の小さなアーチ</text>
+            </svg>
+          </figure>
+        </div>
+      </article>
+
+      <article class="step">
+        <h3><span class="num">6</span> 黒の脚を両端に足して橋を伸ばす</h3>
+        <p>端の黄・赤の横棒の下に、青と同じ向きの黒い棒を左右1本ずつ差し込みます。</p>
+        <div class="views">
+          <figure>
+            <figcaption>上から</figcaption>
+            <svg viewBox="0 0 360 240">
+              <rect width="360" height="240" fill="#fff"/>
+              <rect x="36" y="28" width="18" height="184" rx="6" fill="#2c2c2c"/>
+              <rect x="306" y="28" width="18" height="184" rx="6" fill="#2c2c2c"/>
+              <rect x="118" y="28" width="18" height="184" rx="6" fill="#4a90d9"/>
+              <rect x="224" y="28" width="18" height="184" rx="6" fill="#4a90d9"/>
+              <rect x="86" y="72" width="188" height="16" rx="6" fill="#e040a0"/>
+              <rect x="86" y="152" width="188" height="16" rx="6" fill="#e040a0"/>
+              <rect x="171" y="28" width="18" height="184" rx="6" fill="#5b8c3e"/>
+              <rect x="48" y="50" width="160" height="16" rx="6" fill="#e8b800"/>
+              <rect x="48" y="174" width="160" height="16" rx="6" fill="#e8b800"/>
+              <rect x="152" y="50" width="160" height="16" rx="6" fill="#e23b3b"/>
+              <rect x="152" y="174" width="160" height="16" rx="6" fill="#e23b3b"/>
+            </svg>
+          </figure>
+          <figure>
+            <figcaption>横から</figcaption>
+            <svg viewBox="0 0 360 180">
+              <rect width="360" height="180" fill="#fff"/>
+              <line x1="16" y1="148" x2="344" y2="148" stroke="#c9b79a" stroke-width="4"/>
+              <rect x="28" y="128" width="32" height="16" rx="5" fill="#2c2c2c"/>
+              <rect x="300" y="128" width="32" height="16" rx="5" fill="#2c2c2c"/>
+              <rect x="92" y="108" width="36" height="16" rx="5" fill="#4a90d9"/>
+              <rect x="232" y="108" width="36" height="16" rx="5" fill="#4a90d9"/>
+              <rect x="154" y="52" width="52" height="16" rx="5" fill="#5b8c3e"/>
+              <path d="M36 128 C110 128, 150 70, 180 58 C210 70, 250 128, 324 128" fill="none" stroke="#e23b3b" stroke-width="10" stroke-linecap="round"/>
+              <text x="180" y="170" text-anchor="middle" font-size="12" fill="#6b5e4e">両端の黒が新しい脚</text>
+            </svg>
+          </figure>
+        </div>
+      </article>
+
+      <article class="step">
+        <h3><span class="num">7</span> 同じ作業のくり返し。桃は「青の上・黒の下」</h3>
+        <p>黒い脚を持ち上げ、桃色の横棒を<strong>青の上・黒の下</strong>に通します。反対側は茶色で同じことをします。</p>
+        <div class="views">
+          <figure>
+            <figcaption>上から</figcaption>
+            <svg viewBox="0 0 360 240">
+              <rect width="360" height="240" fill="#fff"/>
+              <rect x="36" y="28" width="18" height="184" rx="6" fill="#2c2c2c"/>
+              <rect x="306" y="28" width="18" height="184" rx="6" fill="#2c2c2c"/>
+              <rect x="118" y="28" width="18" height="184" rx="6" fill="#4a90d9"/>
+              <rect x="224" y="28" width="18" height="184" rx="6" fill="#4a90d9"/>
+              <rect x="86" y="72" width="188" height="16" rx="6" fill="#e040a0"/>
+              <rect x="86" y="152" width="188" height="16" rx="6" fill="#e040a0"/>
+              <rect x="171" y="28" width="18" height="184" rx="6" fill="#5b8c3e"/>
+              <rect x="48" y="50" width="160" height="16" rx="6" fill="#e8b800"/>
+              <rect x="48" y="174" width="160" height="16" rx="6" fill="#e8b800"/>
+              <rect x="152" y="50" width="160" height="16" rx="6" fill="#e23b3b"/>
+              <rect x="152" y="174" width="160" height="16" rx="6" fill="#e23b3b"/>
+              <rect x="20" y="32" width="160" height="16" rx="6" fill="#f48fb1"/>
+              <rect x="20" y="192" width="160" height="16" rx="6" fill="#f48fb1"/>
+              <rect x="180" y="32" width="160" height="16" rx="6" fill="#a0522d"/>
+              <rect x="180" y="192" width="160" height="16" rx="6" fill="#a0522d"/>
+            </svg>
+          </figure>
+          <figure>
+            <figcaption>横から</figcaption>
+            <svg viewBox="0 0 360 180">
+              <rect width="360" height="180" fill="#fff"/>
+              <line x1="12" y1="152" x2="348" y2="152" stroke="#c9b79a" stroke-width="4"/>
+              <path d="M24 136 C90 120, 150 58, 180 48 C210 58, 270 120, 336 136" fill="none" stroke="#2c2c2c" stroke-width="6" stroke-linecap="round" opacity=".35"/>
+              <path d="M28 128 C100 110, 150 62, 180 52 C210 62, 260 110, 332 128" fill="none" stroke="#f48fb1" stroke-width="10" stroke-linecap="round"/>
+              <path d="M28 118 C100 100, 150 56, 180 46 C210 56, 260 100, 332 118" fill="none" stroke="#a0522d" stroke-width="10" stroke-linecap="round"/>
+              <rect x="28" y="128" width="28" height="16" rx="5" fill="#2c2c2c"/>
+              <rect x="304" y="128" width="28" height="16" rx="5" fill="#2c2c2c"/>
+              <rect x="154" y="42" width="52" height="16" rx="5" fill="#5b8c3e"/>
+              <text x="180" y="172" text-anchor="middle" font-size="12" fill="#6b5e4e">本数を増やすほどアーチが長くなる</text>
+            </svg>
+          </figure>
+        </div>
+      </article>
+
+      <article class="step">
+        <h3><span class="num">8</span> 完成。手を離しても崩れない</h3>
+        <p>ゆっくり手を離すと、横から見て中央が高く、両端が机につくアーチになります。上から少し押すと、かえって締まって強くなります。</p>
+        <div class="views">
+          <figure>
+            <figcaption>上から</figcaption>
+            <svg viewBox="0 0 360 240">
+              <rect width="360" height="240" fill="#fff"/>
+              <rect x="36" y="20" width="18" height="200" rx="6" fill="#2c2c2c"/>
+              <rect x="118" y="20" width="18" height="200" rx="6" fill="#4a90d9"/>
+              <rect x="171" y="20" width="18" height="200" rx="6" fill="#5b8c3e"/>
+              <rect x="224" y="20" width="18" height="200" rx="6" fill="#4a90d9"/>
+              <rect x="306" y="20" width="18" height="200" rx="6" fill="#2c2c2c"/>
+              <rect x="20" y="28" width="160" height="14" rx="6" fill="#f48fb1"/>
+              <rect x="48" y="52" width="160" height="14" rx="6" fill="#e8b800"/>
+              <rect x="86" y="78" width="188" height="14" rx="6" fill="#e040a0"/>
+              <rect x="152" y="52" width="160" height="14" rx="6" fill="#e23b3b"/>
+              <rect x="180" y="28" width="160" height="14" rx="6" fill="#a0522d"/>
+              <rect x="86" y="148" width="188" height="14" rx="6" fill="#e040a0"/>
+              <rect x="48" y="174" width="160" height="14" rx="6" fill="#e8b800"/>
+              <rect x="152" y="174" width="160" height="14" rx="6" fill="#e23b3b"/>
+              <rect x="20" y="198" width="160" height="14" rx="6" fill="#f48fb1"/>
+              <rect x="180" y="198" width="160" height="14" rx="6" fill="#a0522d"/>
+            </svg>
+          </figure>
+          <figure>
+            <figcaption>横から</figcaption>
+            <svg viewBox="0 0 360 180">
+              <rect width="360" height="180" fill="#fff"/>
+              <line x1="8" y1="154" x2="352" y2="154" stroke="#c9b79a" stroke-width="4"/>
+              <path d="M20 148 C80 110, 140 48, 180 40 C220 48, 280 110, 340 148" fill="none" stroke="#d7c4a3" stroke-width="18" stroke-linecap="round"/>
+              <path d="M22 146 C82 112, 140 54, 180 46 C220 54, 278 112, 338 146" fill="none" stroke="#8d6e4c" stroke-width="8" stroke-linecap="round"/>
+              <line x1="40" y1="86" x2="70" y2="148" stroke="#2c2c2c" stroke-width="8" stroke-linecap="round"/>
+              <line x1="320" y1="86" x2="290" y2="148" stroke="#2c2c2c" stroke-width="8" stroke-linecap="round"/>
+              <line x1="120" y1="58" x2="128" y2="128" stroke="#4a90d9" stroke-width="8" stroke-linecap="round"/>
+              <line x1="240" y1="58" x2="232" y2="128" stroke="#4a90d9" stroke-width="8" stroke-linecap="round"/>
+              <line x1="180" y1="34" x2="180" y2="92" stroke="#5b8c3e" stroke-width="8" stroke-linecap="round"/>
+              <text x="180" y="172" text-anchor="middle" font-size="12" fill="#6b5e4e">接着剤なしの自立アーチ</text>
+            </svg>
+          </figure>
+        </div>
+      </article>
+    </section>
+
+    <section class="card">
+      <h2>手順の一覧（上から／横から）</h2>
+      <img src="images/davinci_steps_both_views.png" alt="6コマで上からと横からを並べた手順図">
+    </section>
+
+    <section class="card">
+      <h2>うまく組むコツ</h2>
+      <ul>
+        <li>新しい棒は真横からではなく、<strong>斜め下から</strong>差し込む</li>
+        <li>途中でねじれないよう、左右の出っ張りをそろえる</li>
+        <li>滑る割り箸なら、最初だけテープで仮止めして、慣れたら外す</li>
+        <li>本数を増やすと同じ「上にくぐらせて、隣の下に通す」のくり返し</li>
+        <li>のりで固定すると学校へ持っていきやすい。分解できるものも別に置くと原理が説明しやすい</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>なぜ崩れないか</h2>
+      <p>棒同士が押し合い、接触面の摩擦で滑り落ちません。上に重さをかけるほど締まる構造です。レオナルド・ダ・ヴィンチが軍用の仮設橋として考えた仕組みの、割り箸版です。</p>
+    </section>
+
+    <section class="card">
+      <h2>ネットで見た元の資料</h2>
+      <ul>
+        <li><a href="https://www.pref.kanagawa.jp/documents/83858/davinci-bridge.pdf">神奈川県「ダヴィンチの橋」PDF</a> … 色分け図と写真。途中から小さい横顔写真つき</li>
+        <li><a href="https://omosire-ya.club/archives/3040">おもしれ～やクラブ 作り方記事</a> … 割り箸15本の文章手順と写真</li>
+        <li><a href="https://www.steampoweredfamily.com/da-vinci-bridge-design-challenge/">STEAM Powered Family</a> … 色付き上から図と、完成アーチの横から写真</li>
+        <li><a href="https://scoutsvictoria.com.au/media/6052/program-da-vinci-bridges.pdf">Scouts Victoria PDF</a> … 上から見た色塗り棒の4ステップ</li>
+        <li><a href="https://technikforum-backnang.de/images/download/Leonardobruecke-Aufbauhinweise.pdf">Technikforum Backnang PDF</a> … 上から見た寸法図（Draufsicht）</li>
+      </ul>
+    </section>
+
+    <footer>
+      図の色分けは神奈川県の教材と、英語圏のchopsticks / popsicle-stick 手順を照合して描いています。実物写真は各リンク先を見てください。
+    </footer>
+  </main>
+</body>
+</html>
