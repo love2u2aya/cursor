@@ -16,7 +16,7 @@ HANDOFF = Path("★AI関連ファイル/projects/_HANDOFF.md")
 OUT_DIR = Path("★AI関連ファイル/projects")
 
 SCRIPT_HEAD = "## 15. 台本（まるごと）"
-CUT_HEAD = "### 時間が押した時の切り方（12分版）"
+CUT_HEAD = "### 選んで削るときの目安"
 VOICE_HEAD = "### 声に出すときの注意"
 
 # 読み上げ用の字を大きくする。手元でもスマホでも追える下限。
