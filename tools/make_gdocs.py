@@ -87,7 +87,7 @@ def build_script(preamble, sections, path):
         add_lines(doc, lines, BODY_PT)
 
     for title, block in sections:
-        if title.startswith(("時間が押した", "声に出すとき")):
+        if title.startswith(("時間が押した", "声に出すとき", "選んで削る")):
             continue
         doc.add_heading(title, level=1)
         for lines in clean(block):
@@ -116,7 +116,7 @@ def build_cheat(text, sections, path):
     for line in [
         "勧誘　その場で契約しないこと",
         "縛り　長期の定期を増やさないこと",
-        "負担　高い金利の負債を置いたまま投資を増やさないこと",
+        "負担　繰上げ返済のボタンを、今日は押さないこと",
         "頭　金利ニュースで配分を変えないこと",
     ]:
         doc.add_paragraph(line, style="List Bullet")
@@ -126,7 +126,7 @@ def build_cheat(text, sections, path):
         "0–2　地図。前回との違い。棚は4つ、注意点は14",
         "2–5　勧誘（代表は銀行）",
         "5–8　縛り（代表は定期）",
-        "8–11　負担（代表は払う金利＋物価）",
+        "8–11　負担（繰上げを止める。125%と見直し確認）",
         "11–13　頭（代表は平均）",
         "13–15　4つを1つに。3ヶ月は増やさない。11月に掃除",
     ]:
